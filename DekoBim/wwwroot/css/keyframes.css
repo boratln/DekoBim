@@ -1,0 +1,9 @@
+﻿@keyframes slideDown {
+    from {
+        max-height: 0;
+    }
+
+    to {
+        max-height: 700px; /* Bu değeri içeriğinize göre ayarlayın */
+    }
+}

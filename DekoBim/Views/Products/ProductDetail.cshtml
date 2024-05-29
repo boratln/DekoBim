@@ -1,0 +1,1013 @@
+﻿@model ProductsViewModel
+@{
+
+    var id = Model.Id;
+    var name = Model.Name_;
+    var teknikozellik = Model.teknik_ozellikdata;
+
+    var tanim = Model.description;
+    var uygulama_alanlari = Model.uygulama_alanlari;
+    var siniflandirma = Model.siniflandirma;
+    var revit = Model.revit?.ToString();
+    var revitversiyon = Model.revitversiyon;
+    var revittarih = Model.revittarih?.ToString();
+    var solidworks = Model.solidworks;
+    var solidversiyon = Model.solidversiyon;
+    var solidworkstarih = Model.solidtarih.ToString();
+    var autocad = Model.autocad;
+    var autocadversiyon = Model.autocadversiyon;
+    var autocadtarih = Model.autocadtarih.ToString();
+    var ifcformat = Model.ifcformat;
+    var ifcformatversiyon = Model.ifcversiyon;
+    var ifcformattarih = Model.ifctarih.ToString();
+    var diger = Model.diger;
+    var sartname = Model.sartnameler;
+    var sertifikalar = Model.sertifakalar;
+    var digerdokumanlar = Model.DigerDokuman;
+    var kullanimkilavuz = Model.Kullanimkilavuzları;
+    var tanitimvideopath = Model.tanitimvideopath;
+    var montajvideopath = Model.montajvideopath;
+    var programlar = Model.Programlar;
+    var katalogfiyatliste = Model.katalogfiyatliste;
+    DateTime revittarihler = DateTime.Now;
+
+    if (!string.IsNullOrEmpty(revittarih))
+    {
+        revittarihler = DateTime.Parse(revittarih);
+    }
+    DateTime solidworkstarihler = DateTime.Parse(solidworkstarih);
+    DateTime autocadtarihler = DateTime.Parse(autocadtarih);
+    DateTime ifctarihler = DateTime.Parse(ifcformattarih);
+    int revityear = revittarihler.Year;
+    int revitmonth = revittarihler.Month;
+    int revitday = revittarihler.Day;
+    int revithour = revittarihler.Hour;
+    int revitminute = revittarihler.Minute;
+
+    int solidyear = solidworkstarihler.Year;
+    int solidmonth = solidworkstarihler.Month;
+    int solidday = solidworkstarihler.Day;
+    int solidhour = solidworkstarihler.Hour;
+    int solidminute = solidworkstarihler.Minute;
+
+    int autocadyear = autocadtarihler.Year;
+    int autocadmonth = autocadtarihler.Month;
+    int autocadday = autocadtarihler.Day;
+    int autocadhour = autocadtarihler.Hour;
+    int autocadminute = autocadtarihler.Minute;
+
+    int ifcyear = ifctarihler.Year;
+    int ifcmonth = ifctarihler.Month;
+    int ifcday = ifctarihler.Day;
+    int ifchour = ifctarihler.Hour;
+    int ifcminute = ifctarihler.Minute;
+
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <link rel="stylesheet" href="/css/keyframes.css" />
+   <style>
+        .dropdown-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        #content {
+            background-color: #f9f9f9; /* Hafif gri arka plan rengi */
+            border: 1px solid #ddd; /* İnce, açık gri kenarlık */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+            padding: 20px; /* İçerik ve kenarlık arasında boşluk */
+            margin-top: 20px; /* Üstteki öğelerden boşluk */
+            border-radius: 8px; /* Yuvarlak köşeler */
+            font-family: 'Arial', sans-serif; /* Yazı tipi */
+            color: #333; /* Yazı rengi */
+            transition: all 0.3s ease; /* Animasyon efekti */
+        }
+
+            #content:hover {
+                transform: translateY(-5px); /* Fare ile üzerine gelindiğinde hafif yukarı hareket */
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Fare ile üzerine gelindiğinde gölge artışı */
+            }
+
+
+
+        #listcontent ul {
+            list-style-type: none; /* Liste işaretlerini kaldırır */
+            padding: 0; /* İç boşluğu sıfırlar */
+            margin: 0; /* Dış boşluğu sıfırlar */
+            background-color: #ffffff; /* Liste arka plan rengi */
+            border-radius: 10px; /* Liste kenar yuvarlaklığı */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); /* Liste için hafif gölge */
+        }
+
+        #listcontent li {
+            background-color: #f9f9f9; /* Arka plan rengi */
+            margin: 10px 0; /* Liste öğeleri arasında dikey boşluk */
+            padding: 20px; /* İçten boşluk */
+            border-radius: 5px; /* Kenar yuvarlaklığı */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Gölge efekti */
+            transition: transform 0.2s, background-color 0.2s; /* Geçiş efektleri */
+            pointer-events:none;
+            font-family:fangsong;
+        }
+
+            #listcontent li:hover {
+                transform: translateY(-5px); /* Fare ile üzerine gelindiğinde yukarı taşı */
+                background-color: #e8e8e8; /* Fare ile üzerine gelindiğinde arka plan rengini değiştir */
+            }
+
+            #listcontent li b {
+                color: #333; /* Başlık rengi */
+                font-size: 18px; /* Başlık font boyutu */
+                display: block; /* Başlığı blok seviyesinde göster */
+                margin-bottom: 5px; /* Başlık ve metin arasında boşluk */
+            }
+
+            #listcontent li p {
+                color: #666; /* Metin rengi */
+                font-size: 14px; /* Metin font boyutu */
+                line-height: 1.5; /* Satır yüksekliği */
+            }
+
+
+
+        .dropdown-btn {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .arrow-up {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            display: none;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height:500px;
+            overflow-y:auto;
+        }
+
+            .dropdown-content.show {
+                display: block;
+                padding: 10px;
+                animation: slideDown 0.5s ease-out forwards;
+            }
+
+            .dropdown-content button {
+                width: 100%;
+                padding: 10px;
+                background-color: #fff;
+                border: none;
+                text-align: left;
+                opacity: 0;
+                transition: opacity 0.5s ease-out;
+            }
+
+            .dropdown-content.show button {
+                opacity: 1;
+            }
+            a{
+                text-decoration:none;
+                color:black;
+            }
+
+        .btn-light {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dae0e5;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .btn-light:hover {
+                background-color: #e2e6ea;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+
+      
+
+
+
+
+
+
+
+    </style>
+    <link rel="stylesheet" href="/css/productdetail.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/productdetail.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h2>@Model.Name_</h2>
+            <!-- Ürün resmi -->
+            <div class="col-xs-4 item-photo">
+                @if (Model.base64 == null)
+                {
+                    <img style="max-width:35%" src="/img/resimyok.png" />
+                }
+                else
+                {
+                    <img style="max-width:35%;" src="data:image/jpeg;base64,@Model.base64" />
+                }
+            </div>
+            <!-- Marka bilgisi -->
+            <div class="col-xs-5" style="border:0px solid gray">
+                <h5 style="color:#337ab7">Marka: <a style="text-decoration:none;font-weight:700" asp-controller="Companys" asp-action="MarkayagoreUrun" asp-route-id="@Model.company?.Id">@Model.company?.Name_</a></h5>
+            </div>
+            <center>
+                <div class="col-xs-9">
+                    <!-- Ürün detayları için menü -->
+                    <ul class="menu-items">
+                        <button style="margin-right:5px" class="btn btn-light" onclick="showDescription()">Tanım</button>
+                        <button style="margin-right:5px" class="btn btn-light" onclick="showSpecifications()">Teknik Özellikler</button>
+                        <button style="margin-right:5px" class="btn btn-light" onclick="showApplications()">Uygulama Alanları</button>
+                        <button style="margin-right:5px" class="btn btn-light" onclick="showClassification()">Sınıflandırma</button>
+                        <button style="margin-right:5px" class="btn btn-light" onclick="showOther()">Diğer</button>
+                    </ul>
+                    <!-- İçerik bölümü -->
+                    <div>
+                        <br />
+                        <p id="content">
+
+                        </p>
+                        <p id="listcontent">
+
+                        </p>
+                    </div>
+                    <br />
+                   
+                  
+                    <!-- Çizim Dosyaları açılır menüsü -->
+                    <div class="dropdown-container">
+                        <div class="dropdown-btn" onclick="toggleDropdown('drawing-dropdown', 'drawing-arrow')">
+                            Çizim Dosyaları <span class="dropdown-arrow" id="drawing-arrow">&#9660;</span>
+                        </div>
+                        <div class="dropdown-content" id="drawing-dropdown">
+                            <!-- Revit butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('revit-content', 'revit-arrow');ShowRevit()">Revit <span class="dropdown-arrow" id="revit-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="revit-content">
+                                    <p id="revitcontent" ></p>
+                                </div>
+                            </div>
+                            <!-- SOLIDWORKS butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('solidworks-content', 'solidworks-arrow');Showsolid()">SOLIDWORKS <span class="dropdown-arrow" id="solidworks-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="solidworks-content">
+                                    <p id="solidcontent"></p>
+                                </div>
+                            </div>
+                            <!-- AUTOCAD butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('autocad-content', 'autocad-arrow');showAutocad()">AUTOCAD <span class="dropdown-arrow" id="autocad-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="autocad-content">
+                                    <p id="autocadcontent"></p>
+                                </div>
+                            </div>
+                            <!-- IFC FORMAT butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('ifc-format-content', 'ifc-format-arrow');Showifc()">IFC FORMAT <span class="dropdown-arrow" id="ifc-format-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="ifc-format-content">
+                                    <p id="ifccontent"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Döküman Dosyaları açılır menüsü -->
+                    <div class="dropdown-container">
+                        <div class="dropdown-btn" onclick="toggleDropdown('document-dropdown', 'document-arrow')">
+                            Döküman Dosyaları <span class="dropdown-arrow" id="document-arrow">&#9660;</span>
+                        </div>
+                        <div class="dropdown-content" id="document-dropdown">
+                            <!-- Şartnameler butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('specifications-content', 'specifications-arrow');showsartnameler(sartnameler.toString())">Şartnameler <span class="dropdown-arrow" id="specifications-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="specifications-content">
+                                    <p  id="sartnamecontent"></p>
+                                </div>
+                            </div>
+                            <!-- Sertifikalar butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('certificates-content', 'certificates-arrow');showsertifika(sertifikalar.toString())">Sertifikalar <span class="dropdown-arrow" id="certificates-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="certificates-content">
+                                    <p id="sertifikacontent"></p>
+                                </div>
+                            </div>
+                            <!-- Diğer Dökümanlar butonu ve iç içe açılır menüsü -->
+                            <div class="dropdown-container">
+                                <button class="dropdown-btn" onclick="toggleDropdown('other-documents-content', 'other-documents-arrow');showdigerdokuman(digerdokuman.toString())">Diğer Dökümanlar <span class="dropdown-arrow" id="other-documents-arrow">&#9660;</span></button>
+                                <div class="dropdown-content" id="other-documents-content">
+                                    <p id="digerdokumancontent"></p>
+                                </div>
+                            </div>
+                            <div class="dropdown-container">
+                                <div class="dropdown-btn" onclick="toggleDropdown('programs-dropdown-doc', 'programs-arrow-doc');showprogramlar(programlar.toString())">
+                                    Programlar <span class="dropdown-arrow" id="programs-arrow-doc">&#9660;</span>
+                                </div>
+                                <div class="dropdown-content" id="programs-dropdown-doc">
+                                    <p id="programcontent"></p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+              
+                    <!-- Programlar açılır menüsü -->
+                    <div class="dropdown-container">
+                        <div class="dropdown-container">
+                            <div class="dropdown-btn" onclick="toggleDropdown('programs-dropdown-main', 'programs-arrow-main')">
+                                Programlar <span class="dropdown-arrow" id="programs-arrow-main">&#9660;</span>
+                            </div>
+                            <div class="dropdown-content" id="programs-dropdown-main">
+                                <div class="dropdown-container">
+                                    <div class="dropdown-btn" onclick="toggleDropdown('catalogue-content-main', 'catalogue-arrow-main');showkatalog(katalogfiyatliste.toString())">
+                                        Katalog/Fiyat Listesi <span class="dropdown-arrow" id="catalogue-arrow-main">&#9660;</span>
+                                    </div>
+                                    <div class="dropdown-content" id="catalogue-content-main">
+                                        <p id="katalogcontent"></p>
+                                    </div>
+                                </div>
+                                <div class="dropdown-container">
+                                    <div class="dropdown-btn" onclick="toggleDropdown('manual-content-main', 'manual-arrow-main');showkullanimkilavuz(kullanimkilavuz.toString())">
+                                        Kullanım Kılavuzu <span class="dropdown-arrow" id="manual-arrow-main">&#9660;</span>
+                                    </div>
+                                    <div class="dropdown-content" id="manual-content-main">
+                                        <p id="kullanimkilavuzcontent"> </p>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-container">
+                                    <div class="dropdown-btn" onclick="toggleDropdown('assembly-videos-content-main', 'assembly-videos-arrow-main');showmontajvideo(montajvideopath.toString())">
+                                        Montaj Videoları <span class="dropdown-arrow" id="assembly-videos-arrow-main">&#9660;</span>
+                                    </div>
+                                    <div class="dropdown-content" id="assembly-videos-content-main">
+                                       <p id="montajvideocontent"></p>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-container">
+                                    <div class="dropdown-btn" onclick="toggleDropdown('intro-videos-content-main', 'intro-videos-arrow-main');showtanitimvideo(tanitimvideopath.toString())">
+                                        Tanıtım Videoları <span class="dropdown-arrow" id="intro-videos-arrow-main">&#9660;</span>
+                                    </div>
+                                    <div class="dropdown-content" id="intro-videos-content-main">
+                                        <p id="tanitimvideocontent"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+               
+                </div>
+            </center>
+        </div>
+    </div>
+    <!-- JavaScript işlevleri -->
+ 
+</body>
+</html>
+
+<script>
+
+    window.onbeforeunload = function (event) {
+        navigator.sendBeacon('/Home/ClearSessionData');
+    };
+    function toggleDropdown(contentId, arrowId) {
+        var content = document.getElementById(contentId);
+        var arrow = document.getElementById(arrowId);
+        content.classList.toggle('show');
+        arrow.classList.toggle('arrow-up');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('drawing-btn').addEventListener('click', function () {
+            toggleDropdown('drawing-dropdown', 'drawing-arrow');
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // 'Programlar' için açılır menü
+            document.getElementById('programs-arrow').onclick = function () {
+                toggleDropdown('programs-dropdown', 'programs-arrow');
+            };
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.getElementById('programs-arrow-doc').addEventListener('click', function () {
+            toggleDropdown('programs-dropdown-doc', 'programs-arrow-doc');
+        });
+    });
+
+    $(document).ready(function () {
+       
+    });
+    var ad = @Html.Raw(Json.Serialize(name));
+    var revitversiyon=@Html.Raw(Json.Serialize(revitversiyon));
+    var solidversiyon=@Html.Raw(Json.Serialize(solidversiyon));
+    var autocadversiyon=@Html.Raw(Json.Serialize(autocadversiyon));
+    var ifcversiyon = @Html.Raw(Json.Serialize(ifcformatversiyon));
+    var id = @Html.Raw(Json.Serialize(id));
+    var teknikozellik = @Html.Raw(Json.Serialize(teknikozellik));
+    var tanim = @Html.Raw(Json.Serialize(tanim));
+    var uygulama_alanlari = @Html.Raw(Json.Serialize(uygulama_alanlari));
+    var siniflandirma = @Html.Raw(Json.Serialize(siniflandirma));
+    var diger = @Html.Raw(Json.Serialize(diger));
+    var revit = @Html.Raw(Json.Serialize(revit));
+    var revittarih = @Html.Raw(Json.Serialize(revittarih));
+    var solidworks = @Html.Raw(Json.Serialize(solidworks));
+    var solidworkstarih = @Html.Raw(Json.Serialize(solidworkstarih));
+    var autocad = @Html.Raw(Json.Serialize(autocad));
+    var autocadtarih = @Html.Raw(Json.Serialize(autocadtarih));
+    var ifcformat = @Html.Raw(Json.Serialize(ifcformat));
+    var ifcformattarih = @Html.Raw(Json.Serialize(ifcformattarih));
+    var sertifikalar = @Html.Raw(Json.Serialize(sertifikalar));
+    var digerdokuman = @Html.Raw(Json.Serialize(digerdokumanlar));
+    var kullanimkilavuz = @Html.Raw(Json.Serialize(kullanimkilavuz));
+    var sartnameler = @Html.Raw(Json.Serialize(sartname));
+    var programlar = @Html.Raw(Json.Serialize(programlar));
+    var tanitimvideopath = @Html.Raw(Json.Serialize(tanitimvideopath));
+    var montajvideopath = @Html.Raw(Json.Serialize(montajvideopath));
+    var katalogfiyatliste = @Html.Raw(Json.Serialize(katalogfiyatliste));
+    var revityear = @Html.Raw(Json.Serialize(revityear));
+    var revitmonth = @Html.Raw(Json.Serialize(revitmonth));
+    var revitday = @Html.Raw(Json.Serialize(revitday));
+    var revithour = @Html.Raw(Json.Serialize(revithour));
+    var revitminute = @Html.Raw(Json.Serialize(revitminute));
+    var solidyear = @Html.Raw(Json.Serialize(solidyear));
+    var solidmonth = @Html.Raw(Json.Serialize(solidmonth));
+    var solidday = @Html.Raw(Json.Serialize(solidday));
+    var solidhour = @Html.Raw(Json.Serialize(solidhour));
+    var solidminute = @Html.Raw(Json.Serialize(solidminute));
+    var autocadyear = @Html.Raw(Json.Serialize(autocadyear));
+    var autocadmonth = @Html.Raw(Json.Serialize(autocadmonth));
+    var autocadday = @Html.Raw(Json.Serialize(autocadday));
+    var autocadhour = @Html.Raw(Json.Serialize(autocadhour));
+    var autocadminute = @Html.Raw(Json.Serialize(autocadminute));
+    var ifcyear = @Html.Raw(Json.Serialize(ifcyear));
+    var ifcmonth = @Html.Raw(Json.Serialize(ifcmonth));
+    var ifcday = @Html.Raw(Json.Serialize(ifcday));
+    var ifchour = @Html.Raw(Json.Serialize(ifchour));
+    var ifcminute = @Html.Raw(Json.Serialize(ifcminute));
+
+    //veriler yoksa boş gözüksün
+    if (tanitimvideopath == null) {
+        tanitimvideopath = " ";
+    }
+    if (montajvideopath == null) {
+        montajvideopath = " ";
+    }
+    if (programlar == null) {
+        programlar = " ";
+    }
+    if (revit == null) {
+        revit = " ";
+    }
+    if (solidworks == null) {
+        solidworks = " ";
+    }
+    if (autocad == null) {
+        autocad = " ";
+    }
+    if (ifcformat == null) {
+        ifcformat = " ";
+    }
+    if (sertifikalar == null) {
+        sertifikalar = " ";
+    }
+    if (digerdokuman == null) {
+        digerdokuman = " ";
+    }
+    if (kullanimkilavuz == null) {
+        kullanimkilavuz = " ";
+    }
+    if (sartnameler == null) {
+        sartnameler = " ";
+    }   
+    if (tanim == null) {
+        tanim = " ";
+    }
+    if (teknikozellik == null) {
+        teknikozellik = " ";
+    }
+    if (uygulama_alanlari == null) {
+        uygulama_alanlari = " ";
+    }
+    if (siniflandirma == null) {
+        siniflandirma = " ";
+    }
+    if (diger == null) {
+        diger = " ";
+    }
+    if (katalogfiyatliste == null) {
+        katalogfiyatliste = " ";
+    }
+    window.onload = function () {
+        showDescription();
+    };
+    /////////////////////////////////////////////////////////////////ÜRÜN MENÜLERİ
+    function showDescription() {
+        var contentElement = document.getElementById("content");
+        contentElement.style.display = "block";
+        var content = document.getElementById("listcontent");
+        content.innerHTML = "";
+
+        contentElement.innerHTML = `${tanim}`;
+        contentElement.classList.add("show-content");
+    }
+
+    function showSpecifications() {
+        var content2 = document.getElementById("content");
+        content2.innerHTML = " ";
+        content2.style.display = "none";
+
+        var content = document.getElementById("listcontent");
+        var listHtml = "<ul style='list-style-type:none;'>";
+        var ozellikSayac = 1; 
+
+        teknikozellik.forEach(function (ozellik) {
+            ozellik = ozellik.trim();
+            if (ozellik !== "") {
+                // Her bir teknik özellik için bir liste öğesi oluştur
+                listHtml += `<li style="font-size:20px"> ${ozellik}</li>`;
+                ozellikSayac++;
+            }
+        });
+
+        if (ozellikSayac === 1) {
+            // Eğer teknik özellik yoksa, uygun bir mesaj göster
+            listHtml = "Teknik özellikler bulunamadı.";
+        } else {
+            listHtml += "</ul>"; // Teknik özellikler varsa, liste etiketini kapat
+        }
+
+        content.innerHTML = listHtml; // Oluşturulan HTML yapısını "content" id'li elementin içeriğine ekle
+    }
+
+
+    function showApplications() {
+        var content = document.getElementById("listcontent");
+        content.innerHTML = "";
+        document.getElementById("content").innerHTML = `${uygulama_alanlari}`;
+        document.getElementById("content").style.display = "block";
+    }
+
+    function showClassification() {
+        var content = document.getElementById("listcontent");
+        content.innerHTML = "";
+        document.getElementById("content").innerHTML = `${siniflandirma}`;
+        document.getElementById("content").style.display = "block";
+
+    }
+
+    function showOther() {
+        var content = document.getElementById("listcontent");
+        content.innerHTML = "";
+        document.getElementById("content").innerHTML = `${diger}`;
+        document.getElementById("content").style.display = "block";
+
+    }
+    ///////////////////////////////////////////////////////////////////////////////ÇİZİM DOSYALARI
+    function ShowRevit() {
+        if (revit != null && revit!=" ") {
+            document.getElementById("revitcontent").innerHTML = `
+        <img style="width:5%" src="/img/revit.png">
+        <a class="download-program" href="data:application/octet-stream;base64,${revit}" download="Revit.rvt" data-product-id="${id}">Revit Dosyası</a>
+        <b> Son Güncellenme Tarihi=${revitday}.${revitmonth}.${revityear} ${revithour}:${revitminute} </b>
+        <b>Versiyon:</b> ${revitversiyon}`;
+            attachDownloadEvent();
+
+        }
+        else {
+            document.getElementById("revitcontent").innerHTML = "Revit bulunamadı";
+        }
+    }
+    function Showsolid() {
+        if (solidworks != null && solidworks != " ") {
+            // Solidworks içeriğini oluştur
+            let solidContent = `<img style="width:5%" src="/img/Icon-SOLIDWORKS.png"> <a class="download-program" href="data:application/octet-stream;base64,${solidworks}" download="Solidworks.cwr" data-product-id="${id}">Solidworks Dosyası</a><b> Son Güncellenme Tarihi=${solidday}.${solidmonth}.${solidyear} ${solidhour}:${solidminute}</b>`;
+
+            // solidversiyon null değilse, versiyon bilgisini içeriğe ekle
+            if (solidversiyon != null && solidversiyon != " ") {
+                solidContent += `<b> Versiyon: ${solidversiyon}</b>`;
+            }
+
+            // İçeriği HTML elementine ekle
+            document.getElementById("solidcontent").innerHTML = solidContent;
+            attachDownloadEvent();
+        } else {
+            document.getElementById("solidcontent").innerHTML = "Solidworks bulunamadı";
+        }
+    }
+
+    function showAutocad() {
+        if (autocad != null && autocad != " ") {
+            // Autocad içeriğini oluştur
+            let autocadContent = `<img style="width:5%" src="/img/autodesk-autocad-product-icon-128@2x.png"> <a class="download-program" href="data:application/octet-stream;base64,${autocad}" download="Autocad.dwg" data-product-id="${id}">Autocad Dosyası</a><b> Son Güncellenme Tarihi=${autocadday}.${autocadmonth}.${autocadday} ${autocadhour}:${autocadminute}</b>`;
+
+            // autocadversiyon null değilse, versiyon bilgisini içeriğe ekle
+            if (typeof autocadversiyon !== 'undefined' && autocadversiyon != null && autocadversiyon != " ") {
+                autocadContent += `<b> Versiyon: ${autocadversiyon}</b>`;
+            }
+
+            // İçeriği HTML elementine ekle
+            document.getElementById("autocadcontent").innerHTML = autocadContent;
+            attachDownloadEvent();
+        } else {
+            document.getElementById("autocadcontent").innerHTML = "Autocad bulunamadı";
+        }
+    }
+
+    function Showifc() {
+        if (ifcformat != null && ifcformat != " ") {
+            // IFC format içeriğini oluştur
+            let ifcContent = `<img style="width:5%" src="/img/ifc.png"> <a class="download-program" href="data:application/octet-stream;base64,${ifcformat}" download="ifcformat.ifc" data-product-id="${id}">İfc Format Dosyası</a><b> Son Güncellenme Tarihi=${ifcday}.${ifcmonth}.${ifcday} ${ifchour}:${ifcminute}</b>`;
+
+            // ifcversiyon null değilse, versiyon bilgisini içeriğe ekle
+            if (typeof ifcversiyon !== 'undefined' && ifcversiyon != null && ifcversiyon != " ") {
+                ifcContent += `<b> Versiyon: ${ifcversiyon}</b>`;
+            }
+
+            // İçeriği HTML elementine ekle
+            document.getElementById("ifccontent").innerHTML = ifcContent;
+            attachDownloadEvent();
+        } else {
+            document.getElementById("ifccontent").innerHTML = "Ifc format bulunamadı";
+        }
+    }
+
+    ////////////////////////////////////////////////////////DÖKÜMAN DOSYALARI
+    function showsartnameler(sartnamelerString) {
+        let sartnamelerHtml = "<ul style='list-style-type:none;'>";
+        let sartnamesayac = 1; // Şartnameler için sayaç
+
+        const sartnamelerArray = sartnamelerString.split(',');
+
+        if (sartnamelerArray && sartnamelerArray.length > 0) {
+            sartnamelerArray.forEach((sartname) => {
+                sartname = sartname.trim();
+                if (sartname !== "") {
+                    // İlk şartname için kontrol
+                    if (sartnamesayac === 1) {
+                        sartnamelerHtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="sartname" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${sartname}" download="${ad}${sartnamesayac}.docx"  data-product-id="${id}"><b>Şartname ${sartnamesayac}</b></a></li>`;
+                    } else {
+                        sartnamelerHtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="sartname" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${sartname}" download="${ad}${sartnamesayac}.docx" data-product-id="${id}"   ><b>Şartname ${sartnamesayac}</b></a></li>`;
+                    }
+                    sartnamesayac++;
+                }
+            });
+        } else {
+            sartnamelerHtml = "Şartnemeler bulunamadı.";
+        }
+
+        sartnamelerHtml += "</ul>";
+
+        document.getElementById("sartnamecontent").innerHTML = sartnamelerHtml;
+        attachDownloadEvent();
+    }
+
+
+    function showsertifika(sertifikastring) {
+        let sertifikalarhtml = "<ul style='list-style-type:none;'>";
+        let sertifikasayac = 1; // Sertifikalar için sayaç
+
+        const sertifikaarray = sertifikastring.split(',');
+
+        if (sertifikaarray && sertifikaarray.length > 0) {
+            sertifikaarray.forEach((sertifika) => {
+                sertifika = sertifika.trim();
+                if (sertifika !== "") {
+                    // İlk sertifika için kontrol
+                    if (sertifikasayac === 1) {
+                        sertifikalarhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="sertifika" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${sertifika}" download="${ad}${sertifikasayac}.docx" data-product-id="${id}"   >Sertifika ${sertifikasayac}</a></li>`;
+                    } else {
+                        sertifikalarhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="sertifika" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${sertifika}" download="${ad}${sertifikasayac}}.docx"   data-product-id="${id}">Sertifika ${sertifikasayac}</a></li>`;
+                    }
+                    sertifikasayac++;
+                }
+            });
+        } else {
+            sertifikalarhtml += "Sertifikalar bulunamadı.";
+        }
+
+        sertifikalarhtml += "</ul>";
+
+        document.getElementById("sertifikacontent").innerHTML = sertifikalarhtml;
+        attachDownloadEvent();
+    }
+
+
+    function showdigerdokuman(digerdokumanstring) {
+        let digerdokumanhtml = "<ul style='list-style-type:none;'>";
+        let digerdokumansayac = 1; // Diğer dökümanlar için sayaç
+
+        const digerdokumanarray = digerdokumanstring.split(',');
+
+        if (digerdokumanarray && digerdokumanarray.length > 0) {
+            digerdokumanarray.forEach((digerdokuman) => {
+                digerdokuman = digerdokuman.trim();
+                if (digerdokuman !== "") {
+                    const programName = digerdokuman.split('/').pop(); // Dosya yolundan dosya adını al
+                    const fileExtension = programName.split('.').pop().toLowerCase();
+                    let icon;
+                    let downloadName;
+                    switch (fileExtension) {
+                        case 'pdf':
+                            icon = '/img/pdf.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.pdf`;
+                            break;
+                        case 'docx':
+                            icon = '/img/word.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.docx`;
+                            break;
+                        case 'png':
+                            icon = '/img/png.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.png`;
+                            break;
+                        case 'jpeg':
+                        case 'jpg':
+                            icon = '/img/jpeg.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.jpeg`;
+                            break;
+                        case 'txt':
+                            icon = '/img/txt.png'; // Eğer varsa txt için bir ikon
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.txt`;
+                            break;
+                            case 'dxf':
+                            icon = '/img/dxf.jpg';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.dxf`;
+                            break;
+                        case 'obj':
+                            icon = '/img/obj.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.obj`;
+                            break;
+                        case 'stl':
+                            icon = '/img/stl.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.stl`;
+                            break;
+                        case '3ds':
+                            icon = '/img/3ds.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.3ds`;
+                            break;
+                        case 'stp':
+                            icon = '/img/stp.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.stp`;
+                            break;
+                        case 'step':
+                            icon = '/img/step.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.step`;
+                            break;
+                        case 'skp':
+                            icon = '/img/skp.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}.skp`;
+                            break;
+                        default:
+                            icon = '/img/file.png';
+                            downloadName = `Diğer Döküman ${digerdokumansayac}`;
+                    }
+                    // İlk döküman için kontrol
+                    if (digerdokumansayac === 1) {
+                        digerdokumanhtml += `<li><img src="${icon}" style="width: 20px; vertical-align: middle;" alt="File Icon"><a class="download-program" href="${digerdokuman}" download="${downloadName}" data-product-id="${id}"  >${downloadName}</a></li>`;
+                    } else {
+                        digerdokumanhtml += `<li><img src="${icon}" style="width: 20px; vertical-align: middle;" alt="File Icon"><a class="download-program" href="${digerdokuman}" download="${downloadName}"  data-product-id="${id}"   >${downloadName}</a></li>`;
+                    }
+                    digerdokumansayac++;
+                }
+            });
+        } else {
+            digerdokumanhtml = "Dökümanlar bulunamadı.";
+        }
+
+        digerdokumanhtml += "</ul>";
+
+        document.getElementById("digerdokumancontent").innerHTML = digerdokumanhtml;
+        attachDownloadEvent();
+    }
+
+
+    /////////////////////////PROGRAMLAR
+    function showtanitimvideo(tanitimvideostring) {
+        let videosHtml = "";
+        let counter = 0;
+
+        // Split the string into an array of video paths
+        const videoPaths = tanitimvideostring.split(",");
+
+        if (videoPaths && videoPaths.length > 0) {
+            videosHtml += '<div style="display: flex; flex-wrap: wrap;">'; // Start a flex container
+
+            videoPaths.forEach(videoPath => {
+                videoPath = videoPath.trim();
+                if (videoPath !== "") {
+                    // Add a new video
+                    videosHtml += `<div style="flex: 1 0 33%; max-width: 33%; padding: 5px;">
+                                               <video style="width:100%;height:100%" controls>
+                                                   <source src="/${videoPath}" type="video/mp4">
+                                                   Tarayıcınız video etiketini desteklemiyor.
+                                               </video>
+                                           </div>`;
+
+                    counter++;
+                    if (counter % 3 === 0) {
+                        videosHtml += '<div style="flex-basis: 100%; height: 20px;"></div>'; // Add space after every 3 videos
+                    }
+                }
+                console.log(videoPath);
+            });
+
+            videosHtml += '</div>'; // Close the flex container
+        } else {
+            videosHtml = "Tanıtım videoları bulunamadı.";
+        }
+
+        document.getElementById("tanitimvideocontent").innerHTML = videosHtml;
+
+    }
+    function showmontajvideo(montajVideoString) {
+        let videosHtml = "";
+        let counter = 0;
+
+        // Split the string into an array of video paths
+        const videoPaths = montajVideoString.split(",");
+
+        if (videoPaths && videoPaths.length > 0) {
+            videosHtml += '<div style="display: flex; flex-wrap: wrap;">'; // Start a flex container
+
+            videoPaths.forEach(videoPath => {
+                videoPath = videoPath.trim();
+                if (videoPath !== "") {
+                    // Add a new video
+                    videosHtml += `<div style="flex: 1 0 33%; max-width: 33%; padding: 5px;">
+                                           <video style="width:100%;height:100%" controls>
+                                               <source src="/${videoPath}" type="video/mp4">
+                                               Tarayıcınız video etiketini desteklemiyor.
+                                           </video>
+                                       </div>`;
+
+                    counter++;
+                    if (counter % 3 === 0) {
+                        videosHtml += '<div style="flex-basis: 100%; height: 20px;"></div>'; // Add space after every 3 videos
+                    }
+                }
+                console.log(videoPath);
+            });
+
+            videosHtml += '</div>'; // Close the flex container
+        } else {
+            videosHtml = "Tanıtım videoları bulunamadı.";
+        }
+
+        document.getElementById("montajvideocontent").innerHTML = videosHtml;
+    }
+
+
+    function showkatalog(katalogstring) {
+        let kataloghtml = "<ul style='list-style-type:none;'>";
+        let katalogsayac = 1; // Şartnameler için sayaç
+
+        const katalogarray = katalogstring.split(',');
+
+        if (katalogarray && katalogarray.length > 0) {
+            katalogarray.forEach((katalog) => {
+                katalog = katalog.trim();
+                if (katalog !== "") {
+                    kataloghtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="sartname" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${katalog}" download="Katalog Ve Fiyat Listesi${katalogsayac}.docx"  data-product-id="${id}"  ><b>Katalog Ve Fiyat Listesi ${katalogsayac}<b></a></li>`;
+                    katalogsayac++;
+                }
+            });
+        } else {
+            kataloghtml += "Katalog bulunamadı.";
+        }
+
+        kataloghtml += "</ul>";
+
+        document.getElementById("katalogcontent").innerHTML = kataloghtml;
+        attachDownloadEvent();
+
+    }
+    function showprogramlar(programstring) {
+        let programhtml = "<ul style='list-style-type:none;'>";
+        let programsayac = 1; // Programlar için sayaç
+
+        const programarray = programstring.split(',');
+
+        if (programarray && programarray.length > 0) {
+            programarray.forEach((program) => {
+                program = program.trim();
+                if (program !== "") {
+                    // İlk program için kontrol
+                    if (programsayac === 1) {
+                        programhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${program}" download="${ad}${programsayac}.docx" data-product-id="${id}"    >Program ${programsayac}</a></li>`;
+                    } else {
+                        programhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${program}" download="${ad}${programsayac}.docx"  data-product-id="${id}" >Program ${programsayac}</a></li>`;
+                    }
+                    programsayac++;
+                }
+            });
+        } else {
+            programhtml += "Programlar bulunamadı.";
+        }
+
+        programhtml += "</ul>";
+
+        document.getElementById("programcontent").innerHTML = programhtml;
+        attachDownloadEvent();
+    }
+
+    function attachDownloadEvent() {
+        // "download-program" class'ına sahip tüm bağlantılar için
+        $('.download-program').on('click', function (e) {
+            // Varsayılan indirme davranışını engelle
+            e.preventDefault();
+
+            const href = $(this).attr('href');
+            const download = $(this).attr('download');
+            const productId = $(this).data('product-id'); // Ürün ID'sini al
+            const fileExtension = download.split('.').pop(); // Dosya adından dosya uzantısını al
+
+            console.log(download);
+            console.log(fileExtension);
+            // İlk olarak, indirme sayısını artır
+            $.ajax({
+                url: 'http://45.136.6.177:1345/api/Istatistics/IncreaseDownloadCount',
+                type: 'POST',
+                data: { productId: productId }, // Sadece ürün ID'sini gönder
+                success: function () {
+                    // İndirme sayısı artırıldıktan sonra, DownloadedFile işlemlerini yap
+                    $.ajax({
+                        url: 'http://45.136.6.177:1345/api/DownloadedFile/Post', // DownloadedFile işlemleri için endpoint
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            product: { Id: productId }, // Product nesnesi içinde Id olarak gönder
+                            FileName: download,
+                            FileExtension: fileExtension,
+                            DownloadCount: 1 // DownloadCount başlangıç değeri olarak 1 gönder
+                        }),
+                        success: function () {
+                            // Her iki işlem de başarılı, dosyayı indir
+                            const a = document.createElement('a');
+                            a.href = href;
+                            a.download = download;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("DownloadedFile işlemi başarısız:", error);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('İndirme sayısı artırılamadı:', error);
+                }
+            });
+        });
+    }
+
+    function showkullanimkilavuz(kilavuzstring) {
+        let kilavuzhtml = "<ul style='list-style-type:none;'>";
+        let kilavuzsayac = 1; // Kullanım kılavuzları için sayaç
+
+        const kilavuzarray = kilavuzstring.split(',');
+
+        if (kilavuzarray && kilavuzarray.length > 0) {
+            kilavuzarray.forEach((kilavuz) => {
+                kilavuz = kilavuz.trim();
+                if (kilavuz !== "") {
+                    // İlk kullanım kılavuzu için kontrol
+                    if (kilavuzsayac === 1) {
+                        kilavuzhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="kilavuz${kilavuzsayac}" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${kilavuz}" download="Kullanım Kılavuzu${kilavuzsayac}.docx" data-product-id="${id}"    >Kullanım Kılavuzu ${kilavuzsayac}</a></li>`;
+                    } else {
+                        kilavuzhtml += `<li><img src="/img/word.png" style="width: 20px; vertical-align: middle;" alt="Word Icon"><a class="download-program" id="kilavuz${kilavuzsayac}" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,${kilavuz}" download="Kullanım Kılavuzu${kilavuzsayac}.docx" data-product-id="${id}"    >Kullanım Kılavuzu ${kilavuzsayac}</a></li>`;
+                    }
+                    kilavuzsayac++;
+                }
+            });
+        } else {
+            kilavuzhtml += "Kullanım kılavuzları bulunamadı.";
+        }
+
+        kilavuzhtml += "</ul>";
+
+        document.getElementById("kullanimkilavuzcontent").innerHTML = kilavuzhtml;
+    }
+
+
+</script>

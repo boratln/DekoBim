@@ -1,0 +1,49 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">
+            Kayıt Ol
+        </div>
+        <form asp-controller="User" asp-action="Register">
+            <div class="field">
+                <input type="text" required name="Name"  autocomplete="off" autofocus>
+                <label>Adınız</label>
+            </div>
+            <div class="field">
+                <input type="text" required name="Surname"  autocomplete="off">
+                <label>Soyadınız</label>
+            </div>
+            <div class="field">
+                <input type="email" required name="Email"  autocomplete="off">
+                <label>Mail Adresiniz</label>
+            </div>
+            <div class="field">
+                <input type="password" required name="Password"  autocomplete="off">
+                <label>Şifreniz</label>
+            </div>
+
+            <div class="field">
+                <input type="submit" value="Kayıt Ol">
+            </div>
+            <div class="signup-link">
+                Hesabın var mı? <a asp-controller="User" asp-action="Login">Giriş Yap</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    window.onbeforeunload = function (event) {
+        navigator.sendBeacon('/Home/ClearSessionData');
+    };
+</script>

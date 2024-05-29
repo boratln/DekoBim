@@ -1,0 +1,642 @@
+﻿@{
+    Layout = null;
+}
+@model ListModelView
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Ürün Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap JavaScript Kitaplıkları -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        label{
+            font-weight:bolder;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" asp-controller="User" asp-action="AdminPanel">
+            Management System
+        </a>        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw">Admin</i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Çıkış Yap</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">İç</div>
+                        <a class="nav-link" asp-controller="User" asp-action="AdminPanel">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Panel
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Arayüz</div>
+                        <a class="nav-link collapsed" href="/Discipline/AdminDisciplines" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Disiplinler
+                        </a>
+
+                        <a class="nav-link collapsed" href="/SubDiscipline/AdminSubDiscipline" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Alt Disiplinler
+                        </a>
+                        <a class="nav-link collapsed" href="/Products/AdminProduct" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürünler
+                        </a>
+                        <a class="nav-link collapsed" href="/ProductCategory/AddAdminProductCategory" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürün Kategorileri
+                        </a>
+                        <a class="nav-link collapsed" href="/Companys/AddAdminCompany" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Şirketler
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <br />
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                        Ürün Ekle
+                    </button>
+
+                    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="productModalLabel">Yeni Ürün Ekle</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-controller="Products" asp-action="AdminProduct" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <input type="hidden" id="urunidguncelle" name="id">
+
+                                            <label>Ürün İsmi</label>
+
+                                            <input class="form-control" type="text" required name="product.Name_" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="categorySelect" class="form-label">Ürün Kategorisi</label>
+                                            <select class="form-select" id="categorySelect" name="product.Category.Id">
+                                                @foreach (var data in Model.Categories)
+                                                {
+                                                    <option value="@data.Id">@data.Name_</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="companySelect" class="form-label">Ürün Markası</label>
+                                            <select class="form-select" id="companySelect" name="product.company.Id">
+                                                @foreach (var data in Model.Companys)
+                                                {
+                                                    <option value="@data.Id">@data.Name_</option>
+                                                }
+                                            </select>
+                                        </div>
+                                   
+                                        <div class="mb-3" id="teknikOzelliklerContainer">
+
+                                            <div class="mb-3">
+                                                <label id="selam">Teknik Özellikler</label>
+                                                <input class="form-control" type="text" name="product.teknik_ozellikdata[]" placeholder="Teknik Özellik Girin" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <button type="button" id="teknikOzellikEkleBtn" class="btn btn-secondary mb-3">Teknik Özellik Ekle</button>
+
+
+                                        <div class="mb-3">
+                                            <label>Açıklama</label>
+                                            <input class="form-control" type="text" name="product.description" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Diğer</label>
+                                            <input class="form-control" type="text" name="product.diger" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Sınıflandırma</label>
+                                            <input class="form-control" type="text" name="product.siniflandirma" autocomplete="off">
+                                        </div>
+                                        
+
+
+                                        <div class="mb-3">
+                                            <label>Uygulama Alanları</label>
+                                            <input class="form-control" type="text" name="product.uygulama_alanlari" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Ürün Fotoğrafı</label>
+                                            <input class="form-control" type="file" name="dosya.Photo" accept="image/png, image/jpeg, image/gif">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Tanıtım Videosu </label>
+                                            <input class="form-control" type="file" name="videos.TanitimVideos" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Montaj Videosu</label>
+                                            <input class="form-control" type="file" name="videos.MontajVideos" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Revit Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.revit" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Revit Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.revitversiyon" autocomplete="off" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>SolidWorks Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.solidworks" accept=".cwr">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>SolidWorks Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.solidversiyon" autocomplete="off" >
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Autocad Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.autocad" accept=".dwg">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Autocad Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.autocadversiyon" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>IFC Format Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.ifcformat">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>IFC Format Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.ifcversiyon" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Şartnameleri ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.sartnameler" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Sertifikaları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.sertifikalar" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Kullanım Kılavuzu ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.kullanimkilavuz" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Programları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.programlar" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Diğer Dökümanları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.DigerDokuman" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Katalog Fiyat Listesi</label>
+                                            <input class="form-control" type="file" name="dosya.katalogfiyatliste">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Kaydet</button>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Ürünler
+                        </div>
+                        <div class="card-body">
+                            <table id="datatablesSimple">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Disiplin Adı</th>
+                                        <th>Alt Disiplin Adı</th>
+                                        <th>Ürün Kategori Adı</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Ürün Resmi</th>
+                                        <th>Sil</th>
+                                        <th>Güncelle</th>
+                                        
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var data in Model.Products)
+                                    {
+                                        <tr>
+                                            <td>@data.Id</td>
+                                            <td>@data.Category?.subdicipline?.discipline?.Name_</td>
+                                            <td>@data.Category?.subdicipline?.Name_</td>
+                                            <td>@data.Category?.Name_</td>
+                                            <td>@data.Name_</td>
+                                            <td> 
+                                                @if (data.base64 == null)
+                                                {
+                                                    <img style="width:20%" src="/img/resimyok.png" />
+                                                }
+                                                else
+                                                {
+                                                 <img   style="width:20%" src="data:image/png;base64,@data.base64" />
+
+                                                }
+                                            </td>
+                                            <td>
+                                                <button  type="button" class="btn btn-danger delete-btn" data-id="@data.Id">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button onclick="update_btn(@data.Id)" type="button" class="btn btn-primary">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                    </svg>
+                                                </button>
+
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Ürün başarıyla silindi.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="guncellememodal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true"  >
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="productModalLabel">Ürün Güncelle</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form   asp-controller="Products" asp-action="UpdateProduct" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <input type="hidden" id="urunidguncelle" name="product.Id">
+
+                                            <label>Ürün İsmi</label>
+                                            <input class="form-control" type="text"  name="product.Name_">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="categorySelect" class="form-label">Ürün Kategorisi</label>
+                                            <select class="form-select" id="categorySelect2" name="product.Category.Id">
+                                                @foreach (var data in Model.Categories)
+                                                {
+                                                    <option value="@data.Id">@data.Name_</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="companySelect" class="form-label">Ürün Markası</label>
+                                            <select class="form-select" id="companySelect" name="product.company.Id">
+                                                @foreach (var data in Model.Companys)
+                                                {
+                                                    <option value="@data.Id">@data.Name_</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="teknikOzelliklerContainer2">
+
+                                            <div class="mb-3">
+                                                <label class="form-label" id="selam2">Teknik Özellikler</label>
+                                                <input type="text" class="form-control mb-2" name="product.teknik_ozellikdata[]" placeholder="Teknik özellik girin">
+                                            </div>
+
+                                        </div>
+                                        <button type="button" id="teknikOzellikEkleBtn2" class="btn btn-secondary mb-3">Teknik Özellik Ekle</button>
+
+                                   
+                                        <div class="mb-3">
+                                            <label>Açıklama</label>
+                                            <input class="form-control" type="text" name="product.description" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Diğer</label>
+                                            <input class="form-control" type="text" name="product.diger" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Sınıflandırma</label>
+                                            <input class="form-control" type="text" name="product.siniflandirma" autocomplete="off">
+                                        </div>
+                                    
+                                       
+                                        <div class="mb-3">
+                                            <label>Uygulama Alanları</label>
+                                            <input class="form-control" type="text" name="product.uygulama_alanlari" autocomplete="off">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Ürün Fotoğrafı</label>
+                                            <input class="form-control" type="file" name="dosya.Photo" accept="image/png, image/jpeg, image/gif">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Tanıtım Videosu </label>
+                                            <input class="form-control" type="file" name="videos.TanitimVideos" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Montaj Videosu</label>
+                                            <input class="form-control" type="file" name="videos.MontajVideos" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Revit Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.revit" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Revit Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.revitversiyon" autocomplete="off" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>SolidWorks Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.solidworks" accept=".cwr">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>SolidWorks Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.solidversiyon" autocomplete="off" >
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Autocad Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.autocad" accept=".dwg">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Autocad Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.autocadversiyon" autocomplete="off" >
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>IFC Format Dosyası</label>
+                                            <input class="form-control" type="file" name="dosya.ifcformat">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>IFC Format Versiyonu</label>
+                                            <input class="form-control" type="text" name="product.ifcversiyon">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Şartnameleri ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.sartnameler" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Sertifikaları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.sertifikalar" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Kullanım Kılavuzu ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.kullanimkilavuz" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Programları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.programlar" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Diğer Dökümanları ekleyiniz(Birden fazla seçilebilir)</label>
+                                            <input class="form-control" type="file" name="dosya.DigerDokuman" multiple>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Katalog Fiyat Listesi</label>
+                                            <input class="form-control" type="file" name="dosya.katalogfiyatliste">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-center"   style="margin-left:30%">
+                            CopyRight © @DateTime.Now.Year <a style="text-decoration:none;color:black" asp-controller="Home" asp-action="Filter">DekoBim </a>  Tüm Hakları Saklıdır.
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="assets/demo/chart-area-demo.js"></script>
+    <script src="assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/js/datatables-simple-demo.js"></script>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script>
+    window.onbeforeunload = function (event) {
+        navigator.sendBeacon('/Home/ClearSessionData');
+    };
+
+    function update_btn(id) {
+        $('#guncellememodal').data('id', id); // Modal'a ID bilgisini ata
+
+        $.ajax({
+            url: 'http://45.136.6.177:1345/api/Product/Get/' + id,
+            type: 'GET',
+            success: function (data) {
+                $('#disiplinAdiGuncelle').val(data.Name_);
+                $('#urunidguncelle').val(id);
+                $('input[name="product.Id"]').val(id);
+
+                $('#guncellememodal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                alert("Bir hata oluştu: " + error);
+            }
+        });
+    }
+    $(document).ready(function () {
+        $('#productModal').on('hidden.bs.modal', function () {
+            var container = document.getElementById('teknikOzelliklerContainer');
+            while (container.children.length > 1) {
+                container.removeChild(container.lastChild);
+            }
+            if (container.children.length > 0) {
+                container.children[0].value = '';
+            }
+        });
+
+        $("#categorySelect").change(function () {
+            var id = $(this).val();
+            var namesApiUrl = "http://45.136.6.177:1345/api/Product/OzellikAd/" + id;
+
+            resetForm();
+
+            $.ajax({
+                url: namesApiUrl,
+                type: "GET",
+                success: function (ozellikAdlari) {
+                    if (ozellikAdlari.length > 0) {
+                        var ozellikAdi = ozellikAdlari[0];
+                        $("#selam").text(ozellikAdi);
+                        $('input[name="product.teknik_ozellikdata[]"]').attr('placeholder', ozellikAdi + ' Girin');
+                    }
+                }
+            });
+        });
+
+        function resetForm() {
+            $("#selam").text("Teknik Özellikler");
+            var $firstInput = $('#teknikOzelliklerContainer input[name="product.teknik_ozellikdata[]"]:first');
+            $firstInput.val('');
+            $firstInput.attr('placeholder', 'Teknik Özellik Girin');
+
+            $('#teknikOzelliklerContainer').find('input[name="product.teknik_ozellikdata"]').not($firstInput).each(function () {
+                $(this).prev('label').remove();
+                $(this).remove();
+            });
+        }
+
+        $("#categorySelect").change();
+
+        $('#teknikOzellikEkleBtn').click(function () {
+            addTeknikOzellik($("#categorySelect").val(), 'teknikOzelliklerContainer');
+        });
+
+        $("#categorySelect2").change(function () {
+            var id = $(this).val();
+            var namesApiUrl = "http://45.136.6.177:1345/api/Product/OzellikAd/" + id;
+
+            resetForm();
+
+            $.ajax({
+                url: namesApiUrl,
+                type: "GET",
+                success: function (ozellikAdlari) {
+                    if (ozellikAdlari.length > 0) {
+                        var ozellikAdi = ozellikAdlari[0];
+                        $("#selam2").text(ozellikAdi);
+                        $('input[name="product.teknik_ozellikdata[]"]').attr('placeholder', ozellikAdi + ' Girin');
+                    }
+                }
+            });
+        });
+        $("#categorySelect2").change();
+
+        $('#teknikOzellikEkleBtn2').click(function () {
+            addTeknikOzellik($("#categorySelect2").val(), 'teknikOzelliklerContainer2');
+        });
+
+        function addTeknikOzellik(id, containerId) {
+            var container = document.getElementById(containerId);
+            var countApiUrl = "http://45.136.6.177:1345/api/ProductCategory/teknikozellikcount/" + id;
+            var namesApiUrl = "http://45.136.6.177:1345/api/Product/OzellikAd/" + id;
+
+            $.ajax({
+                url: countApiUrl,
+                type: "GET",
+                success: function (data) {
+                    var intValue = parseInt(data);
+                    var existingInputs = container.querySelectorAll('input[name="product.teknik_ozellikdata[]"]');
+                    if (existingInputs.length > intValue - 1) {
+                        alert("Teknik Özellikleri aştınız");
+                    } else {
+                        $.ajax({
+                            url: namesApiUrl,
+                            type: "GET",
+                            success: function (ozellikAdlari) {
+                                var ozellikAdi = ozellikAdlari[existingInputs.length];
+                                var label = document.createElement('label');
+                                label.textContent = ozellikAdi;
+                                label.className = 'form-label mb-1';
+
+                                var input = document.createElement('input');
+                                input.type = 'text';
+                                input.className = 'form-control mb-2';
+                                input.name = 'product.teknik_ozellikdata[]';
+                                input.placeholder = ozellikAdi + ' girin';
+
+                                container.appendChild(label);
+                                container.appendChild(input);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        $('.delete-btn').click(function () {
+            var id = $(this).data('id');
+            if (confirm("Bu ürünü silmek istediğinize emin misiniz?")) {
+                $.ajax({
+                    url: 'http://45.136.6.177:1345/api/Product/Delete/' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        $('#successModal').modal('show');
+                    }
+                });
+            }
+        });
+
+        $('#successModal').on('hidden.bs.modal', function () {
+            window.location.reload();
+        });
+
+       
+    });
+
+</script>

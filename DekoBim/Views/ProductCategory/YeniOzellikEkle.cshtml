@@ -1,0 +1,213 @@
+﻿@{
+    Layout = null;
+    var id = Context.Session.GetInt32("id");
+}
+@model ProductCategoryViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        .card {
+            background: #f9f9f9; /* Daha hafif bir arka plan */
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+            .card h3 {
+                color: #333; /* Daha koyu bir başlık rengi */
+            }
+
+        input[type="text"], .btn-primary {
+            border-radius: 20px; /* Daha yuvarlak köşeler */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Canlı bir buton rengi */
+            border: none;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type="text"] {
+            border: 1px solid #ddd; /* Daha ince bir çerçeve */
+            padding: 10px;
+        }
+
+            input[type="text"]:focus {
+                border-color: #007bff; /* Fokuslandığında renk değişimi */
+                box-shadow: 0 0 8px rgba(0,123,255,0.1);
+            }
+
+        label {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 400; /* Normal kalınlık için */
+            /* İsteğe bağlı diğer stil özellikleri */
+            font-size: 16px; /* Yazı boyutunu ayarlayabilirsiniz */
+            color: #333; /* Yazı rengini belirleyebilirsiniz */
+        }
+
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" asp-controller="User" asp-action="AdminPanel">
+            Management System
+        </a>
+        <!-- Sidebar Toggle-->
+
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw">Admin</i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Çıkış Yap</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">İç</div>
+                        <a class="nav-link" asp-controller="User" asp-action="AdminPanel">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Panel
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Arayüz</div>
+                        <a class="nav-link collapsed" href="/Discipline/AdminDisciplines" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Disiplinler
+                        </a>
+
+                        <a class="nav-link collapsed" href="/SubDiscipline/AdminSubDiscipline" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Alt Disiplinler
+                        </a>
+                        <a class="nav-link collapsed" href="/Products/AdminProduct" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürünler
+                        </a>
+                        <a class="nav-link collapsed" href="/ProductCategory/AddAdminProductCategory" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürün Kategorileri
+                        </a>
+                        <a class="nav-link collapsed" href="/Companys/AddAdminCompany" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Şirketler
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+
+        <div id="layoutSidenav_content">
+            <div style="position:absolute;left:30%;top:5%" class="container-fluid px-4">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card" style="width: 100%;">
+                            <!-- Card container -->
+                            <div class="card-body">
+                                <form asp-controller="ProductCategory" asp-action="YeniOzellikEkle">
+                                    <h3 class="text-center mb-4">Yeni Özellik Ekle</h3>
+                                    <div id="dynamicInput">
+                                        <input type="hidden" name="Id" />
+                                        <!-- Input fields can be added here -->
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-primary" id="addFeatureBtn" style="border-radius:10px">Yeni Özellik Ekle</button>
+                                    </div>
+                                    <br />
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary" style="border-radius:10px">Kaydet</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="assets/demo/chart-area-demo.js"></script>
+    <script src="assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/js/datatables-simple-demo.js"></script>
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    window.onbeforeunload = function (event) {
+        navigator.sendBeacon('/Home/ClearSessionData');
+    };
+    $(document).ready(function () {
+        var featureNames = []; // Array to hold feature names
+        var currentIndex = 0; // To track the current feature name to use
+
+        // Function to dynamically add input fields with labels
+        function addInput() {
+            console.log("ds");
+            if (currentIndex < featureNames.length) {
+                var featureName = featureNames[currentIndex];
+                var newDiv = $('<div/>').addClass('mb-3');
+                newDiv.append(`<label style="font-weight:bolder">${featureName}</label><br>`);
+                newDiv.append(`<input type='text' autocomplete="off" class='form-control mb-2' name='teknikozellikaralik[]' required placeholder='${featureName} değeri'><br>`);
+                $("#dynamicInput").append(newDiv);
+
+                currentIndex++; // Increment the index for the next call
+            } else {
+                console.log("No more feature names to add.");
+            }
+        }
+
+        // Function to fetch feature names and initialize the form
+        function fetchAndAddFeatures(categoryId) {
+            $.ajax({
+                url: `http://45.136.6.177:1345/api/ProductCategory/teknikozellik/${categoryId}`,
+                type: 'GET',
+                success: function (data) {
+
+                    featureNames = data; // Store fetched feature names
+                    addInput(); // Add the first input field
+                },
+                error: function (error) {
+                    console.error('Error fetching feature names:', error);
+                }
+            });
+        }
+
+        fetchAndAddFeatures(@Html.Raw(Json.Serialize(id)));
+
+        // Attach event listener to 'Yeni Özellik Ekle' button
+        $('#addFeatureBtn').on('click', function () {
+            addInput();
+        });
+    });
+</script>
+

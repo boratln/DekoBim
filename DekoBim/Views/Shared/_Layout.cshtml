@@ -1,0 +1,106 @@
+﻿@using DekoBim.Models
+@{
+    var ad = Context.Session.GetString("ad");
+    var soyad = Context.Session.GetString("soyad");
+    var rol = Context.Session.GetString("rol");
+    var fullname = StringExtensions.CapitalizeFirstLetter(ad) + " " + StringExtensions.CapitalizeFirstLetter(soyad);
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .dropdown-menu[data-bs-popper] {
+            top: 100%;
+            left: -34px;
+            margin-top: 0.125rem;
+        }
+
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> DekoBim</title>
+    <link rel="icon" type="image/x-icon" href="/img/dekobim.png">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DekoBim.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a  class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Filter"> <img style="width:80%;height:45px;margin-bottom:10px"  src="/img/dekobim.png" /></a>
+          
+               
+                <center style="margin-left:-10%">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+              
+                </center>
+                        @if (fullname.Replace(" ", "") == "")
+                        {
+
+                            <div class="d-flex justify-content-end">
+
+                            <div class="dropdown">
+                                <button style="margin-left:-25%" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Misafir
+                                </button>
+                                <ul style="left:-61px" class="dropdown-menu">
+                                    <li class="nav-item ml-auto">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Giriş Yap</a>
+                                    </li>
+                                    <li class="nav-item ml-auto">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Kayıt Ol</a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                            </div>
+                        }
+                        else 
+                        {
+
+                            <div class="d-flex justify-content-end">
+
+                            <div class="dropdown">
+                                <button  style="margin-left:-15%" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @fullname
+                                </button>
+                                <ul style="left:-34px" class="dropdown-menu">
+                                    <li class="nav-item ml-auto">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Çıkış Yap</a>
+                                    </li>                                 
+                                </ul>
+                            </div>
+                            </div>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <br />
+    <center>
+        <footer style="background-color:#041e42" class="border-top footer text-muted">
+        <div style="color:white" class="container">
+                CopyRight © @DateTime.Now.Year <a style="text-decoration:none;color:white" asp-controller="Home" asp-action="Filter">DekoBim </a>  Tüm Hakları Saklıdır.
+        </div>
+    </footer>
+
+    </center>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await Component.InvokeAsync("Notyf")
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

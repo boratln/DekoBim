@@ -1,0 +1,26 @@
+﻿@media (max-width: 768px) {
+    .social-media-buttons h2 {
+        font-size: 16px; /* Smaller font size for very small screens */
+    }
+
+    .button-container {
+        justify-content: space-around; /* Distribute buttons evenly */
+    }
+
+    .social-media-button {
+        margin: 8px; /* Slightly more space around each button */
+        width: 35px; /* Slightly smaller buttons */
+        height: 35px;
+    }
+}
+
+/* Additional media query for very small screens */
+@media (max-width: 480px) {
+    .social-media-buttons {
+        margin-top: 15px; /* Less space above the container */
+    }
+
+        .social-media-buttons h2 {
+            margin-bottom: 10px; /* Less space below the heading */
+        }
+}

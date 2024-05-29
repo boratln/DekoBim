@@ -1,0 +1,340 @@
+﻿@{
+    Layout = null;
+}
+@model List<DisciplineViewModel>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Disiplin Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" asp-controller="User" asp-action="AdminPanel">
+            Management System
+        </a>        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw">Admin</i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Çıkış Yap</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">İç</div>
+                        <a class="nav-link" asp-controller="User" asp-action="AdminPanel">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Panel
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Arayüz</div>
+                        <a class="nav-link collapsed" href="/Discipline/AdminDisciplines" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Disiplinler
+                        </a>
+
+                        <a class="nav-link collapsed" href="/SubDiscipline/AdminSubDiscipline" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Alt Disiplinler
+                        </a>
+                        <a class="nav-link collapsed" href="/Products/AdminProduct" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürünler
+                        </a>
+                        <a class="nav-link collapsed" href="/ProductCategory/AddAdminProductCategory" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Ürün Kategorileri
+                        </a>
+                        <a class="nav-link collapsed" href="/Companys/AddAdminCompany" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                            Şirketler
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <br />
+
+                    <!-- Form with Modal Trigger Button -->
+                    <form>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#disiplinModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                            </svg>
+                            Disiplin Ekle
+                        </button>
+                    </form>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="disiplinModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel">Disiplin Ekle</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Modal içindeki bağımsız form -->
+                                    <form asp-controller="Discipline" asp-action="AdminDisciplines">
+                                        <div class="mb-3">
+                                            <label for="disiplinAdi" class="form-label">Disiplin Adı</label>
+                                            <input type="text" name="Name_" class="form-control" id="disiplinAdi" autocomplete="off" placeholder="Disiplin Adını Girin">
+                                        </div>
+                                        <!-- Modal içindeki form için gönder butonu -->
+                                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            Disiplinler
+                        </div>
+                        <div class="card-body">
+                            <table id="datatablesSimple">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Disiplin Adı</th>
+                                        <th>Sil</th>
+                                        <th>Güncelle</th>
+                                      
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var data in Model)
+                                    {
+                                        <tr>
+                                            <td>@data.Id</td>
+                                            <td>@data.Name_</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger delete-btn" data-id="@data.Id">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <button onclick="update_btn(@data.Id)" type="button" class="btn btn-primary">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                    </svg>
+                                                </button>
+
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Disiplin başarıyla silindi.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="successModal2" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Disiplin başarıyla güncellendi.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Güncelleme Modal -->
+                    <div class="modal fade" id="guncellemeModal" tabindex="-1" aria-labelledby="guncellemeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="guncellemeModalLabel">Disiplin Güncelle</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Modal içindeki form -->
+                                    <form id="guncellemeFormu">
+                                        <input type="hidden" id="disiplinIdGuncelle" name="id"> <!-- Eğer ID'ye ihtiyacınız varsa -->
+                                        <div class="mb-3">
+                                            <label for="disiplinAdiGuncelle" class="form-label">Disiplin Adı</label>
+                                            <input type="text" name="name" class="form-control" autocomplete="off" id="disiplinAdiGuncelle" placeholder="Disiplin Adını Girin">
+                                        </div>
+                                        <!-- Form için gönder butonu -->
+                                        <button type="submit" class="btn btn-primary">Güncelle</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-center" style="margin-left:30%">
+                            CopyRight © @DateTime.Now.Year <a style="text-decoration:none;color:black" asp-controller="Home" asp-action="Filter">DekoBim </a>  Tüm Hakları Saklıdır.
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="assets/demo/chart-area-demo.js"></script>
+    <script src="assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/js/datatables-simple-demo.js"></script>
+</body>
+</html>
+
+<script>
+
+    window.onbeforeunload = function (event) {
+        navigator.sendBeacon('/Home/ClearSessionData');
+    };
+    $(document).ready(function () {
+
+        $('.delete-btn').click(function () {
+            var id = $(this).data('id');
+
+            if (confirm("Disiplini silmek istediğinize emin misiniz? ilgili alt disiplinler,kategoriler ve ürünler silinecektir!")) {
+                $.ajax({
+                    url: 'http://45.136.6.177:1345/api/Discipline/Delete/' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        $('#successModal').modal('show'); 
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Bir hata oluştu: " + error);
+                    }
+                });
+            }
+        });
+
+
+        $('#successModal').on('hidden.bs.modal', function () {
+            // Modal kapatıldığında sayfayı yeniden yükle
+            window.location.reload();
+        });
+        $('#successModal2').on('hidden.bs.modal', function () {
+            // Modal kapatıldığında sayfayı yeniden yükle
+            window.location.reload();
+        });
+
+
+
+
+
+        $('#guncellemeFormu').submit(function (e) {
+            e.preventDefault(); // Formun normal submit işlemini engelle
+
+            var no = $('#disiplinIdGuncelle').val(); // Güncellenecek disiplinin ID'si
+            var ad = $('#disiplinAdiGuncelle').val(); // Güncellenen disiplin adı
+
+            console.log(no);
+            console.log(ad);
+            // AJAX ile güncelleme isteği gönder
+            $.ajax({
+                url: 'http://45.136.6.177:1345/api/Discipline/Update', // Güncelleme URL'iniz
+                type: 'PUT', // Güncelleme için POST metodunu kullanın
+                contentType: 'application/json',
+                data: JSON.stringify({ id: no, Name_: ad.toString() }), // Gönderilecek veriler
+
+                success: function (result) {
+                    if (result === "Güncelleme başarılı") { // İşlem başarılıysa
+                        $('#guncellemeModal').modal('hide'); // Güncelleme modalını kapat
+                        $('#successModal2').modal('show'); // Başarı modalını göster
+                    } else {
+                        alert('Güncelleme işlemi başarısız.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Bir hata oluştu: " + error);
+                }
+            });
+        });
+
+    });
+    //UPDATE MODAL
+    function update_btn(id) {
+        $.ajax({
+            url: 'http://45.136.6.177:1345/api/Discipline/Get/' + id,
+            type: 'GET',
+            success: function (data) {
+                // Modal form alanlarını doldur
+                $('#disiplinIdGuncelle').val(data.id)
+                $('#disiplinAdiGuncelle').val(data.Name_) // Örnek olarak 'name' propertisini kullandım, gerçek properti adınıza göre değiştirin
+
+                // Güncelleme modalını göster
+                $('#guncellemeModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                alert("Bir hata oluştu: " + error);
+            }
+        });
+    }
+</script>
+
+

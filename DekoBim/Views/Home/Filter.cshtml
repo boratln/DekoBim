@@ -1,0 +1,963 @@
+﻿    @using Newtonsoft.Json
+@{
+    var productsJson = Context.Session.GetString("products");
+    List<ProductsViewModel> products = new List<ProductsViewModel>();
+    var sirket = Context.Session.GetInt32("sirketid");
+    var disiplin = Context.Session.GetInt32("disiplinid");
+    var altdisiplin = Context.Session.GetInt32("altdisiplinid");
+    var dosya = Context.Session.GetInt32("dosyaid");
+    var kategori = Context.Session.GetInt32("kategoriid");
+    if (!string.IsNullOrEmpty(productsJson))
+        {
+            products = JsonConvert.DeserializeObject<List<ProductsViewModel>>(productsJson);
+        }
+        var isDataAvailable = products.Any(); 
+
+   
+    }
+    @model ListModelView
+    <link rel="stylesheet" href="/css/random.css" />
+        <style>
+        .margin-top-custom {
+            margin-top: 2%;
+        }
+
+   
+            .centered-checkbox {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%; /* Hücrenin tüm yüksekliğini kaplaması için */
+    }
+        .search-result {
+            background-color: white;
+            padding: 10px 20px; /* Yukarı-aşağı 10px, sağ-sol 20px dolgulama ekledik */
+            border: 1px solid #ccc; /* Kenarlık ekledik */
+            border-radius: 5px;
+            margin-bottom: 10px; /* Sonuçlar arasında boşluk bırakmak için alt kenarlık ekledik */
+        }
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+
+        .right-aligned-row {
+            display: flex;
+            justify-content: flex-end; /* Aligns items to the right */
+        }
+            .container {
+                width: 80%;
+                margin: auto;
+                overflow: hidden;
+            }
+
+       
+
+            .filter-section, .product-section {
+                background: white;
+                padding: 20px;
+                margin-top: 20px;
+                border-radius: 8px;
+            }
+
+                .filter-section h2, .product-section h3 {
+                    color: #333;
+                }
+
+            .filter-group {
+                margin-bottom: 20px;
+            }
+
+                .filter-group label, .filter-group select {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 5px;
+                }
+
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-gap: 20px;
+            }
+
+            .product-card {
+                background: #fff;
+                border: 1px solid #ddd;
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+                .product-card img {
+                    max-width: 100%;
+                    height: auto;
+                    border-radius: 10px;
+                }
+
+                .product-card h5 {
+                    margin-top: 10px;
+                    font-size: 18px;
+                }
+
+                .product-card p {
+                    font-size: 16px;
+                    color: #666;
+                }
+
+                .product-card a {
+                    display: inline-block;
+                    text-decoration: none;
+                    color: #fff;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                }
+           
+            .btn-primary {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                padding: 8px 30px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 8px;
+            }
+
+            .slm {
+                display: inline-block; /* veya float: left; kullanabilirsiniz */
+                margin-right: 10px; /* Kutular arasında boşluk bırakır */
+                vertical-align: top; /* Kutuların üst kenarlarını hizalar */
+            }
+
+            select {
+                width: 200px; /* Seçim kutularının genişliğini belirler */
+                padding: 5px; /* İç boşluğu belirler */
+                margin-bottom: 10px; /* Altındaki elemanlarla arasında boşluk bırakır */
+            }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+       /*  .container {
+            width: 90%;
+            margin: 20px auto;
+        } */
+
+        .header {
+            color: black;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            margin-bottom: 20px;
+        }
+        th{
+            text-align:center;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+
+        .thead-dark th {
+            background-color: #b09ea6;
+            color: white;
+        }
+
+        .create-btn {
+            width: auto; /* Butonun genişliğini içeriğe göre ayarla */
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.25rem;
+            float: left; /* Butonu sağa hizala */
+        }
+
+        /* Checkbox stilleri */
+        .form-check-input {
+            margin-top: 0;
+            margin-left: 0;
+            vertical-align: middle;
+        }
+
+        /* Tablo responsive özellikler */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+    
+        </style>
+        <div class="container mt-3">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#genelFiltreleme">Genel Filtreleme</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#ozelFiltreleme">Özel Filtreleme</a>
+                </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#sartnameOlusturucu">Marka Listesi ve Şartname Oluşturucu</a>
+            </li>
+            </ul>
+
+            <!-- Tab panes -->
+        <div class="tab-content" style="margin-left:-13%">
+            <div id="genelFiltreleme" class="container tab-pane active">
+                <br>
+                <form asp-controller="Home" asp-action="Filter">
+                    <div class="row right-aligned-row">
+                        <div class="col-md-3">
+                            <label>Disiplinler</label>
+                            <select class="form-select" name="Category.subdicipline.discipline.Id" id="disciplineDropdown">
+@foreach (var list in Model?.Disciplines)
+{
+    
+    
+    <option value="@list.Id"> @list.Name_</option>
+}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Alt Disiplinler</label>
+                            <select class="form-select" name="Category.subdicipline.Id" id="subDisciplineDropdown">
+                                @foreach (var list in Model?.SubDisciplines)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="0">Hepsi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Ürünler</label>
+                            <select class="form-select" name="Category.Id" id="kategoridropdown">
+                                @foreach (var list in Model?.Categories)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="">Hepsi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Dosya Türleri</label>
+                            <select class="form-select" name="FileType.Id" id="dosyadropdown">
+                                @foreach (var list in Model?.FileTypes)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="">Hepsi</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row right-aligned-row">
+                        <div class="col-md-3">
+                            <label>Şirketler</label>
+                            <select class="form-select" name="company.Id" id="sirketdropdown">
+                                @foreach (var list in Model.Companys)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="">Hepsi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-9">
+                            <button style="margin-top:4%" class="btn btn-primary" >Filtrele</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+               
+                    <br />
+            <div id="sartnameOlusturucu" class="container tab-pane fade">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="header card-title">(M)arka Listesi ve (Ş)artname Oluşturucu</h2>
+                        <p class="card-text" style="font-size:25px;font-family:cursive;text-align:center">
+                            Marka listesinde olmasını istediğiniz markanın yanındaki kutucuğa (M) tıklayınız ve şartnamesini indirmek istediğiniz ürünün yanındaki (Ş) kutucuğuna tıklayınız.
+                        </p>
+                        <div>
+                             <div class="col-md-3" style="float:left;width:33%;margin-right:5px">
+                            <label>Disiplinler</label>
+                            <select class="form-select" name="Category.subdicipline.discipline.Id" id="sartnamedisiplin">
+                                @foreach (var list in Model?.Disciplines)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3"  style="float:left;width:33%">
+                            <label>Alt Disiplinler</label>
+                            <select class="form-select" name="Category.subdicipline.Id" id="sartnamealtdisiplin">
+                                @foreach (var list in Model?.SubDisciplines)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="0">Hepsi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" style="float:left;width:33%;margin-left:2px">
+                            <label>Ürünler</label>
+                            <select class="form-select" name="Category.Id" id="sartnamekategori">
+                                @foreach (var list in Model?.Categories)
+                                {
+                                    <option value="@list.Id">@list.Name_</option>
+                                }
+                                <option value="0">Hepsi</option>
+                            </select>
+                        </div>
+
+                        </div>
+                        <br />
+                        <input type="button" style="border-radius:10px" class="btn btn-primary" id="searchButton" value="Ürünleri Getir" />
+                        <div class="table-responsive" style="clear:both">
+                            <table style="width:75%" class="table table-bordered" >
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Ürün</th>
+                                        <th scope="col">Marka</th>
+                                        <th scope="col">M</th>
+                                        <th scope="col">Ş</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                               
+                                </tbody>
+                            </table>
+                            <div style="width:25%;float:left;position:absolute;left:77%">
+                                TEST DENEME
+                            </div>
+                        </div>
+                        <button id="createpdfBtn" style="border-radius:10px;clear:both" class="btn btn-primary create-btn">Şartname Ekle</button>
+                        <button id="createexcelBtn" style="border-radius:10px" class="btn btn-primary create-btn">Marka Listesi Ekle</button>
+                        <div style="margin-left:2%"> 
+                            <button id="downloadpdfbtn" style="border-radius:10px" class="btn btn-primary create-btn">Şartname İndir</button>
+                        <button id="downloadexcelbtn" style="border-radius:10px" class="btn btn-primary create-btn">Marka Listesi İndir</button></div>
+                       
+
+
+                    </div>
+                </div>
+                <br />
+            </div>
+
+
+
+            <div id="ozelFiltreleme" class="container tab-pane fade">
+                <br>
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="secimKriteriDropdown">Seçim Kriterine Göre</label>
+                        <select class="form-select" id="secimKriteriDropdown" name="category">
+
+                            <option value="">Seçiniz</option>
+                            @foreach (var data in Model.Categories)
+                            {
+                                <option value="@data.Id">@data.Name_</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <button type="submit" style="border-radius:10px" class="btn btn-primary">Ara</button>
+                    </div>
+                    <br />
+                    <div id="imageContainer"></div>
+
+                </form>
+            </div>
+                </div>
+        </div>
+    <div id="genelfiltreleme" class="products-container mt-4">
+        @{
+            int counter = 0;
+        }
+        <div class="row">
+            @foreach (var data in products)
+            {
+                if (counter % 6 == 0 && counter != 0)
+                {
+                    @:</div><div class="row margin-top-custom">
+                }
+                <div class="col-md-2">
+                    <div id="kartlar" class="card" style="width: 12rem;height:100%;float:left;">
+                        @if (data.base64 == null)
+                        {
+                            <a asp-controller="Products" asp-action="ProductDetail" asp-route-id="@data.Id"><img style="width: 100%; height: auto; object-fit: contain;" class="card-img-top" src="/img/resimyok.png" alt=""></a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Products" asp-action="ProductDetail" asp-route-id="@data.Id"><img style="width: 100%; height: auto; object-fit: contain;" class="card-img-top" src="data:image/png;base64,@data.base64" alt=""></a>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title" style="margin-left:16%">@data.Name_</h5>
+                            @if (data.teknik_ozellikdata != null && data.teknik_ozellikdata.Any())
+                            {
+                                <ul style="list-style-type:none" class="card-text">
+                                    @foreach (var ozellik in data.teknik_ozellikdata)
+                                    {
+                                        <li><b>@ozellik</b></li>
+                                    }
+                                </ul>
+                            }
+                            <a asp-controller="Products" asp-action="ProductDetail" asp-route-id="@data.Id" class="btn btn-primary">Devamı için tıklayınız.</a>
+                        </div>
+                    </div>
+                </div>
+                counter++;
+            }
+            @if (products.Any())
+            {
+              @:</div> 
+            }
+    
+    </div>
+    <br />
+    <br />
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
+ <script>
+    
+        window.onbeforeunload = function(event) {
+    navigator.sendBeacon('/Home/ClearSessionData');
+};
+
+       document.getElementById('downloadpdfBtn').addEventListener('click', function() {
+    var SelectedProducts = $('input[name="SelectedProducts[]"]:checked').map(function() {
+        return this.value;
+    }).get();
+
+    if (SelectedProducts.length > 0) {
+        var productsParam = SelectedProducts.join(',');
+        var pdfDownloadUrl = '/Home/IndirPdf?SelectedProducts=' + productsParam;
+        window.location.href = pdfDownloadUrl;
+    } else {
+        alert("Lütfen en az bir ürün seçiniz.");
+    }
+});
+
+document.getElementById('downloadexcelBtn').addEventListener('click', function() {
+    var selectedBrands = $('input[name="selectedbrands[]"]:checked').map(function() {
+        return this.value;
+    }).get();
+
+    if (selectedBrands.length > 0) {
+        var brandsParam = selectedBrands.join(',');
+        var excelDownloadUrl = '/Home/IndirExcel?selectedBrands=' + brandsParam;
+        window.location.href = excelDownloadUrl;
+    } else {
+        alert("Lütfen en az bir marka seçiniz.");
+    }
+});
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+                var disiplinId = '@Context.Session.GetInt32("disiplinid")';
+                var altdisiplinid='@Context.Session.GetInt32("altdisiplinid")';
+                var sirketid='@Context.Session.GetInt32("sirketid")';
+                var dosyaid='@Context.Session.GetInt32("dosyaid")';
+                var kategoriid='@Context.Session.GetInt32("kategoriid")';
+              if (disiplinId !== null) { // 'null' yerine null kontrolü yapılıyor
+        var selectElement = document.getElementById('disciplineDropdown');
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == disiplinId) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    }
+
+    // Alt Disiplin Dropdown
+    if (altdisiplinid != null) {
+        var selectElement = document.getElementById('subDisciplineDropdown');
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == altdisiplinid || altdisiplinid === 0) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    }
+
+    // Şirket Dropdown
+    if (sirketid != null) {
+        var selectElement = document.getElementById('sirketdropdown'); // Küçük harfle düzeltildi
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == sirketid || sirketid === 0) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    }
+
+    // Kategori Dropdown
+    if (kategoriid != null) {
+        var selectElement = document.getElementById('kategoridropdown'); // Küçük harfle düzeltildi
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == kategoriid || kategoriid === 0) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    }
+
+    // Dosya Türleri Dropdown
+    if (dosyaid != null) {
+        var selectElement = document.getElementById('dosyadropdown'); // Küçük harfle düzeltildi
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == dosyaid || dosyaid === 0) {
+                selectElement.options[i].selected = true;
+                break;
+            }
+        }
+    }
+             var tabs = document.querySelectorAll('.nav-link');
+
+            // Add event listener to each tab
+            tabs.forEach(function(tab) {
+                
+                tab.addEventListener('click', function() {
+                  //  console.log("Tablara basıldı");
+                    // Check if the clicked tab is the one for "Şartname Oluşturucu"
+                    if (tab.getAttribute('href') === '#sartnameOlusturucu') {
+                        // Hide the product cards container
+                        document.getElementById('genelfiltreleme').style.display = 'none';
+                    } else {
+                        // Show the product cards container for other tabs
+                        document.getElementById('genelfiltreleme').style.display = 'block';
+                    }
+                });
+            });
+            var searchForm = document.getElementById('searchForm');
+
+            searchForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                var categoryId = document.getElementById('secimKriteriDropdown').value;
+
+                var features = {};
+                $('.form-select').each(function () {
+                    var featureName = $(this).attr('name');
+                    var featureValue = $(this).val();
+                    if (featureValue && featureName !== 'category' && featureName !== 'company.Id' && featureName !== 'FileType.Id' && featureName !== 'subdicipline.dicipline.Id'
+                        && featureName !== 'subdicipline.Id' && featureName !== 'Category.Id') {
+                        features[featureName] = featureValue;
+                    }
+                });
+
+                var url = new URL('http://45.136.6.177:1345/api/Product/SearchByFeatures');
+                url.searchParams.append('categoryId', categoryId);
+                Object.keys(features).forEach(key => {
+                    url.searchParams.append(`features[${key}]`, features[key]);
+                });
+
+                document.getElementById('imageContainer').innerHTML = '';
+                document.getElementById('imageContainer').style.display = 'flex';
+                document.getElementById('imageContainer').style.flexWrap = 'wrap';
+                document.getElementById('imageContainer').style.justifyContent = 'space-around';
+
+                fetch(url, {
+                    method: 'GET'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var container = document.getElementById('imageContainer');
+                        container.style.display = 'flex';
+                        container.style.flexWrap = 'wrap';
+                        container.style.justifyContent = 'center'; // Ürünleri merkeze hizala
+
+                        data.forEach((product, index, array) => {
+                            // Her bir kart için kolon oluştur
+                            var col = document.createElement('div');
+                            col.classList.add('col-md-4', 'mb-4'); // Her kolon, genişliğin üçte birini kaplar
+
+
+ 
+                            // Kart yapısını oluştur
+                            var card = document.createElement('div');
+                            card.classList.add('card');
+                            card.style.width = '100%'; // Kartın genişliği kolonun genişliğine uyum sağlar
+
+                            // Ürün resmi için bir link oluştur
+                            var imgLink = document.createElement('a');
+                            imgLink.href = `/Products/ProductDetail/${product.id}`;
+
+                            // Ürün resmini ekle
+                            var img = document.createElement('img');
+                            img.classList.add('card-img-top');
+                            img.src = product.base64 ? `data:image/png;base64,${product.base64}` : '/img/resimyok.png';
+                            imgLink.appendChild(img);
+                            card.appendChild(imgLink);
+
+                            // Kart gövdesini ekle
+                            var cardBody = document.createElement('div');
+                            cardBody.classList.add('card-body');
+
+                            // Ürün adını ekle
+                            var title = document.createElement('h5');
+                            title.classList.add('card-title');
+                            title.textContent = product.name_;
+                            title.style.textAlign = 'center';
+                            cardBody.appendChild(title);
+
+                            // Teknik özellikleri ekle
+                            if (product.teknik_ozellikdata) {
+                                var text = document.createElement('p');
+                                text.classList.add('card-text');
+                                text.innerHTML = product.teknik_ozellikdata.join('<br>');
+                                text.style.textAlign = 'center';
+                                cardBody.appendChild(text);
+                            }
+
+                            // "Daha Fazla Bilgi" butonunu ekle
+                            var button = document.createElement('a');
+                            button.classList.add('btn', 'btn-primary');
+                            button.href = `/Products/ProductDetail/${product.id}`;
+                            button.textContent = 'Daha Fazla Bilgi';
+                            button.style.display = 'block'; // Butonu blok yap, böylece merkezi konumlanır
+                            button.style.width = '80%'; // Buton genişliği
+                            button.style.margin = '0 auto'; // Otomatik margin ile butonu merkezle
+                            cardBody.appendChild(button);
+
+                            // Kart gövdesini kart yapısına ekle
+                            card.appendChild(cardBody);
+
+                            // Kartı kolona ekle
+                            col.appendChild(card);
+
+                            // Kolonu konteynere ekle
+                            container.appendChild(col); // 'container' sizin kartları eklemek istediğiniz ana konteynırınız olmalıdır.
+                        });
+
+                   
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+        });
+
+
+        $(document).ready(function () {
+
+
+            //ŞARTNAME OLUŞTURUCU TAB APİ
+           
+            //ŞARTNAME OLUŞTURUCU DİSİPLİN APİ
+            var sartnamedisiplin = $('#sartnamedisiplin').val();
+            console.log("Şartname disiplin id: "+sartnamedisiplin);
+            $.ajax({
+                url:'http://45.136.6.177:1345/api/SubDisciplines/Disiplin/' + sartnamedisiplin,
+                type:'GET',
+                success: function (subdisciplines) {
+                    var subdisciplinedropdown = $('#sartnamealtdisiplin');
+                    subdisciplinedropdown.empty();
+                    $.each(subdisciplines, function (i, subDiscipline) {
+                        console.log("Alt Disiplin ad: "+subDiscipline.name_);
+                        console.log("Alt Disiplin id: "+subDiscipline.id);
+                        subdisciplinedropdown.append(new Option(subDiscipline.name_, subDiscipline.id));
+                    });
+                    subdisciplinedropdown.append(new Option('Hepsi', '0'));
+                },
+                error: function () {
+                    console.log("Hata");
+                }
+            });
+
+
+
+
+
+               var selectedDisciplineId = $('#disciplineDropdown').val(); // Sayfa yüklendiğinde disciplineDropdown'dan seçilen değeri al
+
+        // Bu değeri kullanarak API'yi çağır
+        $.ajax({
+            url: 'http://45.136.6.177:1345/api/SubDisciplines/Disiplin/' + selectedDisciplineId,
+            type: 'GET',
+            success: function (subDisciplines) {
+                var subDisciplineDropdown = $('#subDisciplineDropdown');
+                subDisciplineDropdown.empty();
+
+                $.each(subDisciplines, function (i, subDiscipline) {
+                    subDisciplineDropdown.append(new Option(subDiscipline.name_, subDiscipline.id));
+                });
+                                        subDisciplineDropdown.append(new Option('Hepsi', '0'));
+
+            },
+            error: function () {
+                console.log("Hata");
+            }
+        });
+
+
+        //ŞARTNAME OLUŞTURUCU ALT DİSİPLİN APİ
+                    var altdisiplinid = $('#sartnamealtdisiplin').val();
+            $.ajax({
+                url: 'http://45.136.6.177:1345/api/ProductCategory/AltDisiplin/' + altdisiplinid + '/' + sartnamedisiplin,
+                type:'GET',
+                dataType:'json',
+                success: function (categories) {
+                    console.log("Api Response: ", categories);
+                    var categoridropdown = $('#sartnamekategori');
+                    categoridropdown.empty();
+                    $.each(categories, function (i, category) {
+                        categoridropdown.append(new Option(category.name_, category.id));
+                    });
+                    categoridropdown.append(new Option('Hepsi', '0'));
+                },
+                error: function () {
+                    console.log("Hata");
+                }
+            });
+
+
+
+
+                var selectedSubDisciplineId = $('#subDisciplineDropdown').val();
+                console.log(selectedSubDisciplineId)
+                            console.log(selectedDisciplineId)
+
+          $.ajax({
+
+        url: 'http://45.136.6.177:1345/api/ProductCategory/AltDisiplin/' + selectedSubDisciplineId + '/' + selectedDisciplineId,
+                    type: 'GET',
+                    dataType: 'json', // Expecting JSON response
+                    success: function (categories) {
+                        console.log("API Response: ", categories); // Debugging line
+                        var categoryDropdown = $('#kategoridropdown');
+                        categoryDropdown.empty(); // Clear the existing options
+
+                        // 'Hepsi' seçeneğini '0' değeri ile ekle
+
+                        $.each(categories, function (i, category) {
+                            categoryDropdown.append(new Option(category.name_, category.id));
+                        });
+                                            categoryDropdown.append(new Option('Hepsi', '0'));
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error: ", status, error); // Debugging line
+                    }
+                });
+            $('a[data-bs-toggle="tab"][href="#sartnameOlusturucu"]').on('click', function () {
+                $('#satir').hide(); // 'satir' div'ini gizle
+            });
+
+            // 'Genel Filtreleme' tabına tıklanınca 'satir' div'ini göster
+            $('a[data-bs-toggle="tab"][href="#genelFiltreleme"]').on('click', function () {
+                $('#satir').show(); // 'satir' div'ini göster
+            });
+
+            $('#secimKriteriDropdown').change(function () {
+                var categoryId = $(this).val();
+                $.ajax({
+                    url: `http://45.136.6.177:1345/api/Product/OzellikAd/${categoryId}`,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#searchForm .dynamicInput').remove();
+
+                        data.forEach(function (ozellikAdi) {
+                            var inputGroup = $('<div></div>').addClass('form-group mt-3 dynamicInput');
+                            var label = $('<label></label>').text(ozellikAdi).attr('for', ozellikAdi.toLowerCase());
+                            var select = $('<select ></select>').attr({
+                                id: ozellikAdi.toLowerCase(),
+                                name: ozellikAdi,
+                                class: 'form-select'
+                            }).append($('<option></option>').val('').text('Seçiniz'));
+
+                            inputGroup.append(label).append(select);
+                            $('#searchForm .form-group:last').before(inputGroup);
+
+                            $.ajax({
+                                url: `http://45.136.6.177:1345/api/ProductCategory/OzellikDegerleri/${categoryId}/${ozellikAdi}`,
+                                type: 'GET',
+                                success: function (degerler) {
+                                    degerler.forEach(function (deger) {
+                                        select.append($('<option></option>').val(deger).text(deger));
+                                    });
+                                },
+                                error: function (error) {
+                                    console.error('Error fetching feature values:', error);
+                                }
+                            });
+                        });
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            $('a[data-bs-toggle="tab"][href="#ozelFiltreleme"]').on('click', function () {
+                $('#genelfiltreleme').empty();
+            });
+
+            var selectedDisiplinId = $('#sartnamedisiplin').val();
+            var selectedAltDisiplinId = $('#sartnamealtdisiplin').val();
+    var selectedKategoriId = $('#sartnamekategori').val();
+
+    $('#sartnamedisiplin').change(function() {
+        selectedDisiplinId = $(this).val();
+    });
+
+    $('#sartnamealtdisiplin').change(function() {
+        selectedAltDisiplinId = $(this).val();
+    });
+
+    $('#sartnamekategori').change(function() {
+        selectedKategoriId = $(this).val();
+        console.log("disiplin: " + selectedDisiplinId);
+        console.log("altdisiplin: " + selectedAltDisiplinId);
+        console.log("kategori: " + selectedKategoriId);
+
+  
+    });
+
+       $('#searchButton').click(function () {
+           console.log("ara butonu basıldı");
+                  $.ajax({
+          url: 'https://localhost:7205/api/Product/Markalistesartnameurun/' + selectedDisiplinId + '/' + selectedAltDisiplinId + '/' + selectedKategoriId,
+          type: 'GET',
+          dataType: 'json',
+            success: function(products) {
+                var tableBody = $('.table tbody');
+                tableBody.empty(); // Önceki sonuçları temizle
+
+                products.forEach(function(product) {
+                    var row = $('<tr></tr>');
+                   var productCell = $('<td></td>').text(product.name_).css('text-align', 'center');
+    var brandCell = $('<td></td>').text(product.company.name_).css('text-align', 'center');
+
+             var mCheckbox = $('<input type="checkbox" class="form-check-input">')
+            .attr('name', 'selectedbrands[]')
+            .attr('value', product.id) // Markanın benzersiz ID'sini değer olarak ata
+            .css('margin-left', '35%');
+        var mCell = $('<td></td>').append(mCheckbox);
+
+        // Ürün için checkbox oluşturma ve değer atama
+        var sCheckbox = $('<input type="checkbox" class="form-check-input">')
+            .attr('name', 'SelectedProducts[]')
+            .attr('value', product.id) // Ürünün benzersiz ID'sini değer olarak ata
+            .css('margin-left', '35%');
+        var sCell = $('<td></td>').append(sCheckbox);
+
+                    row.append(productCell, brandCell, mCell, sCell);
+                    tableBody.append(row);
+                });
+            },
+          error: function(xhr, status, error) {
+            var tableBody = $('.table tbody');
+                tableBody.empty(); // Önceki sonuçları temizle
+              console.error("Bir hata oluştu: ", error);
+          }
+      });
+            }); 
+            $('#sartnamedisiplin').change(function () {
+                var disiplinid = $(this).val();
+
+                $.ajax({
+                    url: 'http://45.136.6.177:1345/api/SubDisciplines/Disiplin/' + disiplinid,
+                    type: 'GET',
+                    success: function (subDisciplines) {
+                        var subDisciplineDropdown = $('#sartnamealtdisiplin');
+                        subDisciplineDropdown.empty();
+
+                        $.each(subDisciplines, function (i, subDiscipline) {
+                            subDisciplineDropdown.append(new Option(subDiscipline.name_, subDiscipline.id));
+                        });
+                      subDisciplineDropdown.append(new Option('Hepsi', '0'));
+
+                        $('#sartnamealtdisiplin').change();
+                    
+                    },
+                    error: function () {
+                        console.log("Hata");
+                    }
+                });
+            });
+
+            $('#sartnamealtdisiplin').change(function () {
+                var altdisiplinid = $(this).val();
+                var disiplinid = $('#sartnamedisiplin').val();
+                $.ajax({
+                    url: 'http://45.136.6.177:1345/api/ProductCategory/AltDisiplin/' + altdisiplinid + '/' + disiplinid,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (categories) {
+                        console.log("API Yanıt: ", categories);
+                        var categoryDropdown = $('#sartnamekategori');
+                        categoryDropdown.empty();
+                        $.each(categories, function (i, category) {
+                            categoryDropdown.append(new Option(category.name_, category.id));
+                        });
+                        categoryDropdown.append(new Option('Hepsi', '0'));
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Hata: ", status, error);
+                    }
+                });
+
+            });
+     $('#subDisciplineDropdown').change(function () {
+        var selectedSubDisciplineId = $(this).val();
+        var disiplinid = $('#disciplineDropdown').val(); // Disiplin ID'sini al
+
+        console.log("Selected Sub Discipline ID: ", selectedSubDisciplineId); // Debugging line
+        console.log("Selected Discipline ID: ", selectedDisciplineId); // Debugging line
+
+        $.ajax({
+            url: 'http://45.136.6.177:1345/api/ProductCategory/AltDisiplin/' + selectedSubDisciplineId + '/' + disiplinid,
+            type: 'GET',
+            dataType: 'json', 
+            success: function (categories) {
+                console.log("API Yanıt: ", categories); 
+                var categoryDropdown = $('#kategoridropdown');
+                categoryDropdown.empty(); 
+                $.each(categories, function (i, category) {
+                    categoryDropdown.append(new Option(category.name_, category.id));
+                });
+                categoryDropdown.append(new Option('Hepsi', '0'));
+            },
+            error: function (xhr, status, error) {
+                console.log("Hata: ", status, error); 
+            }
+        });
+    });
+            $('#disciplineDropdown').change(function () {
+                var selectedDisciplineId = $(this).val();
+                $.ajax({
+                    url: 'http://45.136.6.177:1345/api/SubDisciplines/Disiplin/' + selectedDisciplineId,
+                    type: 'GET',
+                    success: function (subDisciplines) {
+                        var subDisciplineDropdown = $('#subDisciplineDropdown');
+                        subDisciplineDropdown.empty();
+
+                        $.each(subDisciplines, function (i, subDiscipline) {
+                            subDisciplineDropdown.append(new Option(subDiscipline.name_, subDiscipline.id));
+                        });
+                                        subDisciplineDropdown.change();
+                         subDisciplineDropdown.append(new Option('Hepsi', '0'));
+                    },
+                    error: function () {
+                        console.log("Hata");
+                    }
+                });
+            });
+        });
+    </script>          
